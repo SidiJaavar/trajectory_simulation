@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulation de Trajectoire Maritime</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div style="display: flex; justify-content: space-between;">
+        <div id="map" style="width: 70%; height: 500px;"></div> <!-- Carte Plotly -->
+        <div style="width: 30%; padding: 20px;">
+            <p>Choisissez une vitesse:</p>
+            <select id="speedSelect" onchange="updateCO2Speed()">
+                <option value="">-- Sélectionnez une vitesse --</option>
+                <option value="10449.0">14 Nds</option>
+                <option value="12352.4">15 Nds</option>
+                <option value="14649.2">16 Nds</option>
+                <option value="15912.1">16.5 Nds</option>
+                <option value="17202.2">17 Nds</option>
+                <option value="18628.0">17.5 Nds</option>
+                <option value="20208.9">18 Nds</option>
+                <option value="22158.5">18.5 Nds</option>
+                <option value="24494.0">19 Nds</option>
+                <option value="27264.0">19.5 Nds</option>
+                <option value="30241.4">20 Nds</option>
+                <option value="33214.0">20.5 Nds</option>
+                <option value="35881.9">21 Nds</option>
+                <option value="37843.8">21.5 Nds</option>
+                <option value="39221.5">22 Nds</option>
+                <option value="40191.2">22.5 Nds</option>
+                <option value="41092.9">23 Nds</option>
+            </select>
+            <p id="co2OutputSpeed"></p>
+            <hr>
+            <div>
+                <p>Choisissez un carburant:</p>
+                <input type="radio" id="mgo" name="fuel" value="45640" onclick="updateCO2(this.value, 'Gasoil Marine (MGO)')">
+                <label for="mgo">Gasoil Marine (MGO)</label><br>
+                <input type="radio" id="gnl" name="fuel" value="38500" onclick="updateCO2(this.value, 'Gaz Naturel Liquéfié (GNL)')">
+                <label for="gnl">Gaz Naturel Liquéfié (GNL)</label><br>
+                <input type="radio" id="battery" name="fuel" value="420565" onclick="updateCO2(this.value, 'Batterie Électrique (mix européen)')">
+                <label for="battery">Batterie Électrique (mix européen)</label>
+                <p id="co2Output"><span id="co2Value">Sélectionnez un carburant</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateCO2(co2Value, fuelType) {
+            document.getElementById("co2Value").innerText = `CO2e est ${co2Value} kg.`;
+        }
+
+        function updateCO2Speed() {
+            var speed = document.getElementById("speedSelect").value;
+            var outputText = speed ? `La CO2e est : ${speed} kg.` : "Sélectionnez une vitesse";
+            document.getElementById("co2OutputSpeed").innerText = outputText;
+        }
+
+        var data = [{
+            type: 'scattergeo',
+            mode: 'lines+markers+text',
+            lon: [-0.2594, -1.0880],
+            lat: [49.2753, 50.8198],
+            text: ['Ouistreham', 'Portsmouth'],
+            textposition: ['bottom right', 'top left'],
+            line: {
+                width: 3,
+                color: 'blue',
+            },
+            marker: {
+                size: 7,
+                color: 'red'
+            }
+        }];
+
+        var layout = {
+            title: 'Trajectoire maritime entre Ouistreham et Portsmouth',
+            geo: {
+                scope: 'europe',
+                projection: {
+                    type: 'azimuthal equal area'
+                },
+                showland: true,
+                landcolor: 'rgb(243, 243, 243)',
+                countrycolor: 'rgb(204, 204, 204)',
+            },
+            annotations: [{
+                x: -0.2594,
+                y: 49.2753,
+                xref: 'x',
+                yref: 'y',
+                text: 'Ouistreham',
+                showarrow: true,
+                arrowhead: 7,
+                ax: 0,
+                ay: -40
+            }, {
+                x: -1.0880,
+                y: 50.8198,
+                xref: 'x',
+                yref: 'y',
+                text: 'Portsmouth',
+                showarrow: true,
+                arrowhead: 7,
+                ax: 0,
+                ay: 40
+            }]
+        };
+
+        Plotly.newPlot('map', data, layout);
+    </script>
+</body>
+</html>
